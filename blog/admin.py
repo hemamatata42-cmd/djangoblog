@@ -1,10 +1,27 @@
 from django.contrib import admin
-from .models import Post
+
+from .models import Category, Post, Tag
+
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'slug', 'status', 'created_at', 'updated_at')
-    list_filter = ('status', 'created_at', 'updated_at')
-    search_fields = ('title', 'content')
-    prepopulated_fields = {'slug': ('title',)}
-    ordering = ('-created_at',)
+
+    list_display = ("title", "status", "created_at")
+
+    list_filter = ("status",)
+
+    search_fields = ("title", "content")
+
+    prepopulated_fields = {"slug": ("title",)}
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+
+    list_display = ("name",)
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+
+    list_display = ("name",)
