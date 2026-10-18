@@ -1,15 +1,56 @@
-from django.urls import path
-from .views import PostListView, PostDetailView,PostCreateView, PostUpdateView, PostDeleteView, RegisterView, MyPostsView, about, contact
 
+from django.urls import path
+from . import views
 
 urlpatterns = [
-    path("", PostListView.as_view(), name="home"),
-    path("my-posts/", MyPostsView.as_view(), name="my_posts"),
-    path("register/", RegisterView.as_view(), name="register"),
-    path("posts/new/", PostCreateView.as_view(), name="post_create"),
-    path("posts/<slug:slug>/edit/", PostUpdateView.as_view(), name="post_edit"),
-    path("posts/<slug:slug>/delete/", PostDeleteView.as_view(), name="post_delete"),
-    path("posts/<slug:slug>/", PostDetailView.as_view(), name="post_detail"),
-    path("about/", about, name="about"),
-    path("contact/", contact, name="contact"),
+    # Home
+    path("", views.PostListView.as_view(), name="home"),
+
+    # Create a new post
+    path(
+        "post/create/",
+        views.PostCreateView.as_view(),
+        name="post_create",
+    ),
+
+    # My Posts
+    path(
+        "my-posts/",
+        views.MyPostsView.as_view(),
+        name="my_posts",
+    ),
+
+    # Post detail
+    path(
+        "posts/<slug:slug>/",
+        views.PostDetailView.as_view(),
+        name="post_detail",
+    ),
+
+    # Edit
+    path(
+        "posts/<slug:slug>/edit/",
+        views.PostUpdateView.as_view(),
+        name="post_update",
+    ),
+
+    # Delete
+    path(
+        "posts/<slug:slug>/delete/",
+        views.PostDeleteView.as_view(),
+        name="post_delete",
+    ),
+
+    # About
+    path("about/", views.about, name="about"),
+
+    # Contact
+    path("contact/", views.contact, name="contact"),
+
+    # Register
+    path(
+        "register/",
+        views.RegisterView.as_view(),
+        name="register",
+    ),
 ]

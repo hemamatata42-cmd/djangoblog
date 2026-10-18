@@ -1,8 +1,6 @@
-{% extends "blog/base.html" %}
-
-{% block title %}Home{% endblock %}
-
-{% block content %}
-    <h1>Welcome to DjangoBlog</h1>
-    <p>This page will soon show a list of blog posts.</p>
-{% endblock %}
+{% if post.cover_image %}
+    <img src="{{ post.cover_image.url }}"
+         class="card-img-top"
+         alt="{{ post.title }}"
+         style="height: 220px; object-fit: cover;">
+{% endif %}

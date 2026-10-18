@@ -1,8 +1,10 @@
+
 from django.db import models
 from django.utils.text import slugify
 from PIL import Image
 from django.contrib.auth.models import User
-from django.conf import settings
+from io import BytesIO
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -31,12 +33,13 @@ class Post(models.Model):
     )
 
     author = models.ForeignKey(
-    User,
-    on_delete=models.CASCADE,
-    related_name='posts',
-    null=True,
-    blank=True
-)
+        User,
+        on_delete=models.CASCADE,
+        related_name="posts",
+        null=True,
+        blank=True
+    )
+
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
@@ -50,9 +53,7 @@ class Post(models.Model):
         blank=True
     )
 
-    title = models.CharField(
-        max_length=200
-    )
+    title = models.CharField(max_length=200)
 
     slug = models.SlugField(
         unique=True,
@@ -67,32 +68,27 @@ class Post(models.Model):
         default="draft"
     )
 
-    created_at = models.DateTimeField(
-        auto_now_add=True
-    )
+    created_at = models.DateTimeField(auto_now_add=True)
 
-    updated_at = models.DateTimeField(
-        auto_now=True
-    )
+    updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
         # Create slug automatically
         if not self.slug:
             self.slug = slugify(self.title)
 
-        # Save the post first
+        # Save post
         super().save(*args, **kwargs)
 
-        # Resize cover image automatically
+        # Resize cover image if necessary
         if self.cover_image:
-            img_path = self.cover_image.path
-            img = Image.open(img_path)
-
-            if img.height > 800 or img.width > 800:
-                img.thumbnail((800, 800))
-                img.save(img_path)
+            try:
+                with Image.open(self.cover_image.path) as img:
+                    img.thumbnail((800, 800))
+                    img.save(self.cover_image.path)
+            except (OSError, ValueError):
+                # Keep the post even if image processing fails
+                pass
 
     def __str__(self):
         return self.title
-
-  

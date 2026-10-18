@@ -4,17 +4,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-
-
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-DEBUG = True
+# अघिल्लो फोटोको निर्देशन (लाइन ३००७) अनुसार कस्टम एरर पेज टेस्ट गर्न DEBUG लाई False बनाइएको छ
+DEBUG = False
 
-ALLOWED_HOSTS = []
-
+# DEBUG = False हुँदा ALLOWED_HOSTS मा यी राखिनुपर्छ (लाइन ३००८ को निर्देशन अनुसार)
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -27,7 +25,6 @@ INSTALLED_APPS = [
     'debug_toolbar',
 ]
 
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -39,10 +36,10 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
-INSTERNAL_IPS = ["127.0.0.1"]
+# यहाँ भएको स्पेलिङ गल्ती (INSTERNAL_IPS) लाई सच्याइएको छ
+INTERNAL_IPS = ["127.0.0.1"]
 
 ROOT_URLCONF = 'config.urls'
-
 
 TEMPLATES = [
     {
@@ -59,9 +56,7 @@ TEMPLATES = [
     },
 ]
 
-
 WSGI_APPLICATION = 'config.wsgi.application'
-
 
 DATABASES = {
     'default': {
@@ -74,9 +69,7 @@ DATABASES = {
     }
 }
 
-
 AUTH_PASSWORD_VALIDATORS = []
-
 
 LANGUAGE_CODE = 'ja'
 
@@ -86,15 +79,22 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / "blog" / "static"]
 
 # Media files
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "home"
+ 
+# पछिल्लो फोटोको स्टेप १ (लाइन ३०२१) को निर्देशन अनुसार थपिएको कोड
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.ERROR: "danger",
+}
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
