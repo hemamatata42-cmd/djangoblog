@@ -73,22 +73,24 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-        # Create slug automatically
         if not self.slug:
-            self.slug = slugify(self.title)
-
-        # Save post
+            base_slug = slugify(self.title)
+            slug = base_slug
+            counter = 1
+            while Post.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
+            
         super().save(*args, **kwargs)
-
-        # Resize cover image if necessary
+        
         if self.cover_image:
-            try:
-                with Image.open(self.cover_image.path) as img:
-                    img.thumbnail((800, 800))
-                    img.save(self.cover_image.path)
-            except (OSError, ValueError):
-                # Keep the post even if image processing fails
-                pass
+            img_path = self.cover_image.path
+            img = Image.open(img_path)
+            if img.height > 800 or img.width > 800:
+                img.thumbnail((800, 800))
+                img.save(img_path)
+
 
     def __str__(self):
         return self.title
